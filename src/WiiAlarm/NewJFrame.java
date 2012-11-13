@@ -182,14 +182,15 @@ public class NewJFrame extends javax.swing.JFrame {
         WiimoteListener list = new WiimoteListener()  {              //новый слушатель
             
             
-            //требует try- catch который нормально не вписывается
+            //???????? требует try- catch который нормально не вписывается
             SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy_hh.mm");
-            PrintWriter pw = new PrintWriter(new File("out" + formatter.format(new Date()) +".txt"));
+            //создание файла out_dd.MM.yyyy_hh.mm.txt 
+            PrintWriter pw = new PrintWriter(new File("out_" + formatter.format(new Date()) +".txt"));
             
        
             @Override
             public void onButtonsEvent(WiimoteButtonsEvent wbe) {
-                
+                //по нажатию кнопки А отключение wii
             if (wbe.isButtonAPressed()){
                 System.out.println(wbe);
                 WiiUseApiManager.shutdown();
@@ -201,7 +202,7 @@ public class NewJFrame extends javax.swing.JFrame {
             public void onIrEvent(IREvent ire) {
                 throw new UnsupportedOperationException("Not supported yet.");
             }
-
+                //считываение координат x,y,z по событию
             @Override
             public void onMotionSensingEvent(MotionSensingEvent mse) {
                 //взятие координат и запись в файл
