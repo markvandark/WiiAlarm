@@ -18,12 +18,6 @@ import wiiusej.wiiusejevents.wiiuseapievents.*;
  *
  * @author In-nya
  */
- class A {
-    public static PrintWriter s() throws IOException{
-        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy_hh.mm");
-        return new PrintWriter(new File("out" + formatter.format(new Date()) +".txt"));
-    }
-}
 public class NewJFrame extends javax.swing.JFrame {
 
     private static void WiiuseApi() {
@@ -180,16 +174,19 @@ public class NewJFrame extends javax.swing.JFrame {
         String hour = jTextField1.getText();
     }//GEN-LAST:event_jTextField1ActionPerformed
 
+    //по кнопке СТАРТ подключение к Wiimote, создание файла для записи координат, запись
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-       Wiimote[] wiimotes = WiiUseApiManager.getWiimotes(1, true);
+       Wiimote[] wiimotes = WiiUseApiManager.getWiimotes(1, true);  
         final Wiimote wiimote = wiimotes[0];
-        //wiimote.activateIRTRacking();
         wiimote.activateMotionSensing();
         WiimoteListener list = new WiimoteListener()  {              //новый слушатель
             
             
+            //требует try- catch который нормально не вписывается
             SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy_hh.mm");
-            PrintWriter pw = A.s();
+            PrintWriter pw = new PrintWriter(new File("out" + formatter.format(new Date()) +".txt"));
+            
+       
             @Override
             public void onButtonsEvent(WiimoteButtonsEvent wbe) {
                 
