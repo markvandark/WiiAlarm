@@ -1,24 +1,15 @@
 package WiiAlarm;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import wiiusej.WiiUseApiManager;
 import wiiusej.Wiimote;
-import wiiusej.wiiusejevents.physicalevents.ExpansionEvent;
-import wiiusej.wiiusejevents.physicalevents.IREvent;
-import wiiusej.wiiusejevents.physicalevents.MotionSensingEvent;
-import wiiusej.wiiusejevents.physicalevents.WiimoteButtonsEvent;
-import wiiusej.wiiusejevents.utils.WiimoteListener;
-import wiiusej.wiiusejevents.wiiuseapievents.*;
 
 /**
  *
  * @author In-nya
  */
 public class NewJFrame extends javax.swing.JFrame {
+    private PrintWriter PrintWriter;
 
     /**
      * Creates new form NewJFrame
@@ -26,7 +17,7 @@ public class NewJFrame extends javax.swing.JFrame {
     public NewJFrame() {
         initComponents();
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -36,8 +27,6 @@ public class NewJFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
@@ -49,13 +38,6 @@ public class NewJFrame extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jSlider1 = new javax.swing.JSlider();
         jLabel3 = new javax.swing.JLabel();
-
-        jMenu1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jMenu1.setText("jMenu1");
-        jMenu1.setBorderPainted(true);
-
-        jMenuItem1.setText("jMenuItem1");
-        jMenu1.add(jMenuItem1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Intelligense Alarm");
@@ -103,6 +85,11 @@ public class NewJFrame extends javax.swing.JFrame {
         jLabel2.setToolTipText("Интервал времени, в течение которого может прозвенеть будильник, раньше установленного (в минутах)\n");
 
         jButton3.setText("Закрыть");
+        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton3MouseClicked(evt);
+            }
+        });
 
         jSlider1.setOrientation(javax.swing.JSlider.VERTICAL);
         jSlider1.setToolTipText("Чувствительность Wiimote\n");
@@ -175,14 +162,14 @@ public class NewJFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(23, 23, 23)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(140, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(37, 37, 37)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(228, Short.MAX_VALUE))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
 
         pack();
@@ -190,7 +177,6 @@ public class NewJFrame extends javax.swing.JFrame {
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
-        String hour = jTextField1.getText();
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     //по кнопке СТАРТ подключение к Wiimote, создание файла для записи координат, запись
@@ -198,14 +184,23 @@ public class NewJFrame extends javax.swing.JFrame {
         Wiimote[] wiimotes = WiiUseApiManager.getWiimotes(1, true);
         final Wiimote wiimote = wiimotes[0];
         wiimote.activateMotionSensing();
-        Listener list = new Listener();
+        int hour = Integer.parseInt(jTextField1.getText());
+        int minutes = Integer.parseInt(jTextField2.getText());  
+        Listener list = new Listener(hour, minutes);
         wiimote.addWiiMoteEventListeners(list);             //добавление слушателя в список слушателей
-
+        list.printtoFail(list.pw);
+        
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
+        // TODO add your handling code here:
+        System.exit(0);
+    }//GEN-LAST:event_jButton3MouseClicked
 
     /**
      * @param args the command line arguments
@@ -259,8 +254,6 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSlider jSlider1;
     private javax.swing.JTextField jTextField1;

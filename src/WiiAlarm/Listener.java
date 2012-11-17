@@ -18,7 +18,6 @@ import wiiusej.wiiusejevents.physicalevents.MotionSensingEvent;
 import wiiusej.wiiusejevents.physicalevents.WiimoteButtonsEvent;
 import wiiusej.wiiusejevents.utils.WiimoteListener;
 import wiiusej.wiiusejevents.wiiuseapievents.*;
-import WiiAlarm.NewJFrame.*;
 
 /**
  *
@@ -26,20 +25,27 @@ import WiiAlarm.NewJFrame.*;
  */
 public class Listener implements WiimoteListener {
 
-    //???????? требует try- catch который нормально не вписывается
+    int hours = 0, minutes = 0;
+    public Listener(int h, int m) {
+        this.hours = h;
+        this.minutes = m;
+    }
+
+    
     SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy_hh.mm");
     SimpleDateFormat timeformat = new SimpleDateFormat("hh.mm.ss");
     //создание файла out_dd.MM.yyyy_hh.mm.txt 
-    PrintWriter pw;
-
-
+    public PrintWriter pw;
+   
     public void printtoFail(PrintWriter p) {
+        
         try {
             pw = new PrintWriter(new File("out_" + formatter.format(new Date()) + ".txt"));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Listener.class.getName()).log(Level.SEVERE, null, ex);
         }
-        pw.println(formatter.format(new Date().getTime()) + " " + 0 + " " + 0 + " " + 0);
+        
+        pw.println(timeformat.format(new Date()) + " " + 0 + " " + 0 + " " + 0);
     }
 
     @Override
@@ -61,7 +67,7 @@ public class Listener implements WiimoteListener {
     @Override
     public void onMotionSensingEvent(MotionSensingEvent mse) {
         //1й столбец - время, взятие координат и запись в файл
-        pw.println(formatter.format(new Date().getTime()) + " "
+        pw.println(timeformat.format(new Date()) + " "
                 + mse.getRawAcceleration().getX() + " "
                 + mse.getRawAcceleration().getY() + " "
                 + mse.getRawAcceleration().getZ());
