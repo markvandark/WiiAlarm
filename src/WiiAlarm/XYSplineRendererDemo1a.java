@@ -2,6 +2,10 @@ package WiiAlarm;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import javax.swing.JPanel;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
@@ -17,21 +21,24 @@ import org.jfree.ui.RectangleInsets;
 import org.jfree.ui.RefineryUtilities;
 
 public class XYSplineRendererDemo1a extends ApplicationFrame
-{
-
+{/*
+    public static FileReader getFile(File file) throws FileNotFoundException{
+        FileReader fr = new FileReader(file);
+        return fr;
+    } */
     public XYSplineRendererDemo1a(String s)
     {
         super(s);
         JPanel jpanel = createDemoPanel();
-        jpanel.setPreferredSize(new Dimension(500, 270));
+        jpanel.setPreferredSize(new Dimension(600, 400));
         getContentPane().add(jpanel);
     }
 
     public static JPanel createDemoPanel()
     {
-        NumberAxis numberaxis = new NumberAxis("X");
-        numberaxis.setAutoRangeIncludesZero(false);
-        NumberAxis numberaxis1 = new NumberAxis("Y");
+        NumberAxis numberaxis = new NumberAxis("Время");
+        numberaxis.setAutoRangeIncludesZero(true);
+        NumberAxis numberaxis1 = new NumberAxis("Отклонение");
         numberaxis1.setAutoRangeIncludesZero(false);
         XYSplineRenderer xysplinerenderer = new XYSplineRenderer();
         XYPlot xyplot = new XYPlot(createSampleData(), numberaxis, numberaxis1, xysplinerenderer);
@@ -39,14 +46,15 @@ public class XYSplineRendererDemo1a extends ApplicationFrame
         xyplot.setDomainGridlinePaint(Color.white);
         xyplot.setRangeGridlinePaint(Color.white);
         xyplot.setAxisOffset(new RectangleInsets(4D, 4D, 4D, 4D));
-        JFreeChart jfreechart = new JFreeChart("XYSplineRenderer", JFreeChart.DEFAULT_TITLE_FONT, xyplot, true);
+        JFreeChart jfreechart = new JFreeChart("График активности во время сна", JFreeChart.DEFAULT_TITLE_FONT, xyplot, true);
         ChartUtilities.applyCurrentTheme(jfreechart);
         ChartPanel chartpanel = new ChartPanel(jfreechart);
         return chartpanel;
     }
 
     private static XYDataset createSampleData()
-    {
+    {   
+        
         XYSeries xyseries = new XYSeries("Series 1");
         xyseries.add(2D, 56.270000000000003D);
         xyseries.add(3D, 41.32D);
