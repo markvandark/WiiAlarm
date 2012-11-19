@@ -6,6 +6,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
@@ -21,12 +23,14 @@ import org.jfree.ui.RectangleInsets;
 import org.jfree.ui.RefineryUtilities;
 
 public class XYSplineRendererDemo1a extends ApplicationFrame
-{/*
-    public static FileReader getFile(File file) throws FileNotFoundException{
+{
+    public static BufferedReader getFile(File file) throws FileNotFoundException{
         FileReader fr = new FileReader(file);
-        return fr;
-    } */
-    public XYSplineRendererDemo1a(String s)
+        BufferedReader in = new BufferedReader(fr);
+        return in;
+    } 
+    
+    public XYSplineRendererDemo1a(String s) throws FileNotFoundException
     {
         super(s);
         JPanel jpanel = createDemoPanel();
@@ -34,7 +38,7 @@ public class XYSplineRendererDemo1a extends ApplicationFrame
         getContentPane().add(jpanel);
     }
 
-    public static JPanel createDemoPanel()
+    public static JPanel createDemoPanel() throws FileNotFoundException
     {
         NumberAxis numberaxis = new NumberAxis("Время");
         numberaxis.setAutoRangeIncludesZero(true);
@@ -52,37 +56,25 @@ public class XYSplineRendererDemo1a extends ApplicationFrame
         return chartpanel;
     }
 
-    private static XYDataset createSampleData()
+    private static XYDataset createSampleData() 
     {   
-        
-        XYSeries xyseries = new XYSeries("Series 1");
-        xyseries.add(2D, 56.270000000000003D);
-        xyseries.add(3D, 41.32D);
-        xyseries.add(4D, 31.449999999999999D);
-        xyseries.add(5D, 30.050000000000001D);
-        xyseries.add(6D, 24.690000000000001D);
-        xyseries.add(7D, 19.780000000000001D);
-        xyseries.add(8D, 20.940000000000001D);
-        xyseries.add(9D, 16.73D);
-        xyseries.add(10D, 14.210000000000001D);
-        xyseries.add(11D, 12.44D);
+        try {
+        BufferedReader in = XYSplineRendererDemo1a.getFile(Values.filetxt);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Listener.class.getName()).log(Level.SEVERE, null, ex);}
+
+        String s="";
+        XYSeries xyseries = new XYSeries("график"+Values.filetxt.getName());
+        while((s = in.readLine()) !== null){
+            String t[] = s.split(" ");
+            xyseries.add(Double.parseDouble(t[0]), Double.parseDouble(t[1]));
+        }
         XYSeriesCollection xyseriescollection = new XYSeriesCollection(xyseries);
-        XYSeries xyseries1 = new XYSeries("Series 2");
-        xyseries1.add(11D, 56.270000000000003D);
-        xyseries1.add(10D, 41.32D);
-        xyseries1.add(9D, 31.449999999999999D);
-        xyseries1.add(8D, 30.050000000000001D);
-        xyseries1.add(7D, 24.690000000000001D);
-        xyseries1.add(6D, 19.780000000000001D);
-        xyseries1.add(5D, 20.940000000000001D);
-        xyseries1.add(4D, 16.73D);
-        xyseries1.add(3D, 14.210000000000001D);
-        xyseries1.add(2D, 12.44D);
-        xyseriescollection.addSeries(xyseries1);
+        xyseriescollection.addSeries(xyseries);
         return xyseriescollection;
     }
 
-    public static void main(String args[])
+    public static void main(String args[]) throws FileNotFoundException
     {
         XYSplineRendererDemo1a xysplinerendererdemo1a = new XYSplineRendererDemo1a("JFreeChart: XYSplineRendererDemo1a.java");
         xysplinerendererdemo1a.pack();

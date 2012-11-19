@@ -270,7 +270,7 @@ public class NewJFrame extends javax.swing.JFrame {
         Listener list = new Listener(hour, minutes);
         wiimote.addWiiMoteEventListeners(list);             //добавление слушателя в список слушателей
         list.printtoFail(list.pw);
-        
+        Values.startCurrentTimeMillis = System.currentTimeMillis();
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -284,7 +284,12 @@ public class NewJFrame extends javax.swing.JFrame {
 
     private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
         // TODO add your handling code here:
-        XYSplineRendererDemo1a xysplinerendererdemo1a = new XYSplineRendererDemo1a("Graph");
+        XYSplineRendererDemo1a xysplinerendererdemo1a = null;
+        try {
+            xysplinerendererdemo1a = new XYSplineRendererDemo1a("Graph");
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
         xysplinerendererdemo1a.pack();
         RefineryUtilities.centerFrameOnScreen(xysplinerendererdemo1a);
         xysplinerendererdemo1a.setVisible(true);

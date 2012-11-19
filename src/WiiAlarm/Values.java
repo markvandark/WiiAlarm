@@ -4,6 +4,7 @@
  */
 package WiiAlarm;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.PrintWriter;
 
@@ -12,7 +13,11 @@ import java.io.PrintWriter;
  * @author Inn-nya-
  */
 public class Values {
+    
+    
     public static File filetxt;
     public PrintWriter PrintWriter;
+    public static long startCurrentTimeMillis;
+    
     
 }

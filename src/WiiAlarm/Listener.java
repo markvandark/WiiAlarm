@@ -88,7 +88,7 @@ public class Listener implements WiimoteListener {
                 Math.pow((double)mse.getRawAcceleration().getX(), 2) 
                 + Math.pow((double)mse.getRawAcceleration().getX(), 2) 
                 + Math.pow((double)mse.getRawAcceleration().getX(), 2))*100))/100d;
-        pw.println(System.currentTimeMillis() +" " + vec);
+        pw.println((System.currentTimeMillis()-Values.startCurrentTimeMillis) +" " + vec);
     }
 
     @Override
