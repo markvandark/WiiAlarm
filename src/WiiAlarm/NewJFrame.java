@@ -1,12 +1,15 @@
 package WiiAlarm;
 
 import com.sun.java_cup.internal.runtime.Symbol;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Calendar;
 import java.util.Date;
+import javax.swing.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -20,7 +23,28 @@ import wiiusej.Wiimote;
  */
 public class NewJFrame extends javax.swing.JFrame {
     
-    
+    Wiimote[] wiimotes = WiiUseApiManager.getWiimotes(1, true);
+    final Wiimote wiimote = wiimotes[0];
+    private ActionListener aList = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            wiimote.activateRumble();
+        }
+    };
+    public Calendar correntCalendar(){
+        Calendar now = Calendar.getInstance();
+        Calendar correntC = Calendar.getInstance();        
+        correntC.set( Calendar.HOUR_OF_DAY, Integer.parseInt(jTextField1.getText()));
+        correntC.set( Calendar.MINUTE, Integer.parseInt(jTextField2.getText()));
+        correntC.set( Calendar.SECOND, 0 );
+        correntC.set( Calendar.MILLISECOND, 0 );
+        if(now.getTime().after(correntC.getTime())){
+            correntC.add(Calendar.HOUR_OF_DAY, +24);
+        }
+        return correntC;
+    }
+
     private static class TXTfilter extends javax.swing.filechooser.FileFilter  {
 
        
@@ -38,6 +62,22 @@ public class NewJFrame extends javax.swing.JFrame {
             return "Text documents (*.txt)";
         }
         }
+    
+    /*public class Timer extends javax.swing.Timer{
+    private final long time;
+    Timer(int time, ActionListener aList){
+        
+        this.time = time;
+        aList = new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                wiimote.activateMotionSensing();
+            }
+        };
+        
+    }
+}*/
 
     /**
      * Creates new form NewJFrame
@@ -181,7 +221,7 @@ public class NewJFrame extends javax.swing.JFrame {
                         .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(72, 72, 72)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -209,7 +249,8 @@ public class NewJFrame extends javax.swing.JFrame {
                         .addComponent(jButton4))
                     .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jFileChooser1.setFileFilter(new TXTfilter());
@@ -262,8 +303,7 @@ public class NewJFrame extends javax.swing.JFrame {
 
     //по кнопке СТАРТ подключение к Wiimote, создание файла для записи координат, запись
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        Wiimote[] wiimotes = WiiUseApiManager.getWiimotes(1, true);
-        final Wiimote wiimote = wiimotes[0];
+        
         wiimote.activateMotionSensing();
         int hour = Integer.parseInt(jTextField1.getText());
         int minutes = Integer.parseInt(jTextField2.getText());
@@ -271,6 +311,10 @@ public class NewJFrame extends javax.swing.JFrame {
         wiimote.addWiiMoteEventListeners(list);             //добавление слушателя в список слушателей
         list.printtoFail(list.pw);
         Values.startCurrentTimeMillis = System.currentTimeMillis();
+        Calendar wakeUp = correntCalendar();
+        Timer start = new Timer((int)(wakeUp.getTimeInMillis()-Values.startCurrentTimeMillis), aList);
+        start.start();
+        start.setRepeats(false);
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -282,17 +326,20 @@ public class NewJFrame extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_jButton3MouseClicked
 
-    private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
-        // TODO add your handling code here:
+    private void startGraph()throws FileNotFoundException, IOException{
         XYSplineRendererDemo1a xysplinerendererdemo1a = null;
-        try {
-            xysplinerendererdemo1a = new XYSplineRendererDemo1a("Graph");
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            try {
+                xysplinerendererdemo1a = new XYSplineRendererDemo1a("Graph");
+            } catch (IOException ex) {
+                Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
         xysplinerendererdemo1a.pack();
         RefineryUtilities.centerFrameOnScreen(xysplinerendererdemo1a);
         xysplinerendererdemo1a.setVisible(true);
+    }
+    private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
+        // TODO add your handling code here:
+        
     }//GEN-LAST:event_jButton4MouseClicked
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
@@ -305,7 +352,13 @@ public class NewJFrame extends javax.swing.JFrame {
         int returnVal = jFileChooser1.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
         Values.filetxt = jFileChooser1.getSelectedFile();
-            
+            try {
+                startGraph();
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 

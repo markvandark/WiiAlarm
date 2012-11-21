@@ -2,10 +2,7 @@ package WiiAlarm;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
@@ -30,7 +27,7 @@ public class XYSplineRendererDemo1a extends ApplicationFrame
         return in;
     } 
     
-    public XYSplineRendererDemo1a(String s) throws FileNotFoundException
+    public XYSplineRendererDemo1a(String s) throws FileNotFoundException, IOException
     {
         super(s);
         JPanel jpanel = createDemoPanel();
@@ -38,7 +35,7 @@ public class XYSplineRendererDemo1a extends ApplicationFrame
         getContentPane().add(jpanel);
     }
 
-    public static JPanel createDemoPanel() throws FileNotFoundException
+    public static JPanel createDemoPanel() throws FileNotFoundException, IOException
     {
         NumberAxis numberaxis = new NumberAxis("Время");
         numberaxis.setAutoRangeIncludesZero(true);
@@ -56,27 +53,28 @@ public class XYSplineRendererDemo1a extends ApplicationFrame
         return chartpanel;
     }
 
-    private static XYDataset createSampleData() 
+    private static XYDataset createSampleData() throws IOException 
     {   
+        BufferedReader in=null;
         try {
-        BufferedReader in = XYSplineRendererDemo1a.getFile(Values.filetxt);
+        in = XYSplineRendererDemo1a.getFile(Values.filetxt);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Listener.class.getName()).log(Level.SEVERE, null, ex);}
 
         String s="";
-        XYSeries xyseries = new XYSeries("график"+Values.filetxt.getName());
-        while((s = in.readLine()) !== null){
+        XYSeries xyseries = new XYSeries("График"+" "+Values.filetxt.getName());
+        while((s = in.readLine()) != null){
             String t[] = s.split(" ");
             xyseries.add(Double.parseDouble(t[0]), Double.parseDouble(t[1]));
         }
         XYSeriesCollection xyseriescollection = new XYSeriesCollection(xyseries);
-        xyseriescollection.addSeries(xyseries);
+        
         return xyseriescollection;
     }
 
-    public static void main(String args[]) throws FileNotFoundException
+    public static void main(String args[]) throws FileNotFoundException, IOException
     {
-        XYSplineRendererDemo1a xysplinerendererdemo1a = new XYSplineRendererDemo1a("JFreeChart: XYSplineRendererDemo1a.java");
+        XYSplineRendererDemo1a xysplinerendererdemo1a = new XYSplineRendererDemo1a("Graph");
         xysplinerendererdemo1a.pack();
         RefineryUtilities.centerFrameOnScreen(xysplinerendererdemo1a);
         xysplinerendererdemo1a.setVisible(true);

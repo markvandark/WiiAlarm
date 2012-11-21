@@ -51,15 +51,15 @@ public class Listener implements WiimoteListener {
     public PrintWriter pw;
    
     public void printtoFail(PrintWriter p) {
-     /*   Calendar temp = correntCalendar();
-        Calendar now = Calendar.getInstance();*/
+        Calendar temp = correntCalendar();
+        Calendar now = Calendar.getInstance();
         try {
             pw = new PrintWriter(new File("out_" + formatter.format(new Date()) + ".txt"));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Listener.class.getName()).log(Level.SEVERE, null, ex);
         }
-     /*   while(temp.after(now)){
-        pw.println(new Date() + " " + 0 + " " + 0 + " " + 0);
+       /* while(temp.after(now) & ){
+        pw.println(System.currentTimeMillis() + " " + 0 + " " + 0 + " " + 0);
         temp.add(Calendar.SECOND, +2);
         }*/
         
@@ -68,7 +68,7 @@ public class Listener implements WiimoteListener {
     @Override
     public void onButtonsEvent(WiimoteButtonsEvent wbe) {
         //по нажатию кнопки А отключение wii
-        if (wbe.isButtonAPressed()) {
+        if (wbe.isButtonMinusPressed()) {
             System.out.println(wbe);
             WiiUseApiManager.shutdown();
             pw.close();
