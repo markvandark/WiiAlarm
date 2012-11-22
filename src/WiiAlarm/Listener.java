@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import sun.security.jgss.spnego.NegTokenInit;
 import wiiusej.WiiUseApiManager;
 import wiiusej.wiiusejevents.physicalevents.ExpansionEvent;
 import wiiusej.wiiusejevents.physicalevents.IREvent;
@@ -26,10 +27,11 @@ import wiiusej.wiiusejevents.wiiuseapievents.*;
  */
 public class Listener implements WiimoteListener {
 
-    private int hours = 0, minutes = 0;
-    public Listener(int h, int m) {
+    private int hours = 0, minutes = 0; long interval = 0;
+    public Listener(int h, int m, long i) {
         this.hours = h;
         this.minutes = m;
+        this.interval = i;
     }
     
     public Calendar correntCalendar(){
@@ -44,7 +46,7 @@ public class Listener implements WiimoteListener {
         }
         return correntC;
     }
-    
+        
     SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy_hh.mm");
     //SimpleDateFormat timeformat = new SimpleDateFormat("hh.mm.ss");
     //создание файла out_dd.MM.yyyy_hh.mm.txt 
@@ -57,12 +59,12 @@ public class Listener implements WiimoteListener {
             pw = new PrintWriter(new File("out_" + formatter.format(new Date()) + ".txt"));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Listener.class.getName()).log(Level.SEVERE, null, ex);
-        }
-       /* while(temp.after(now) & ){
+        }/*
+        while(temp.after(now) & ){
         pw.println(System.currentTimeMillis() + " " + 0 + " " + 0 + " " + 0);
-        temp.add(Calendar.SECOND, +2);
-        }*/
-        
+        temp.getTimeInMillis();
+        }
+        */
     }
 
     @Override
@@ -89,6 +91,9 @@ public class Listener implements WiimoteListener {
                 + Math.pow((double)mse.getRawAcceleration().getX(), 2) 
                 + Math.pow((double)mse.getRawAcceleration().getX(), 2))*100))/100d;
         pw.println((System.currentTimeMillis()-Values.startCurrentTimeMillis) +" " + vec);
+        if(System.currentTimeMillis()>(Values.wakeUp.getTimeInMillis()-Values.interval)){
+            
+        }
     }
 
     @Override

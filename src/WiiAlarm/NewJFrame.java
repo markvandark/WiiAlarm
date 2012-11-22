@@ -1,18 +1,15 @@
 package WiiAlarm;
 
-import com.sun.java_cup.internal.runtime.Symbol;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Calendar;
-import java.util.Date;
-import javax.swing.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.Timer;
 import org.jfree.ui.RefineryUtilities;
 import wiiusej.WiiUseApiManager;
 import wiiusej.Wiimote;
@@ -24,14 +21,31 @@ import wiiusej.Wiimote;
 public class NewJFrame extends javax.swing.JFrame {
     
     Wiimote[] wiimotes = WiiUseApiManager.getWiimotes(1, true);
-    final Wiimote wiimote = wiimotes[0];
+    public final Wiimote wiimote = wiimotes[0];
     private ActionListener aList = new ActionListener() {
 
         @Override
         public void actionPerformed(ActionEvent e) {
             wiimote.activateRumble();
-        }
+        }      
     };
+    public void onStart(){
+        wiimote.activateMotionSensing();
+        Values.hour = Integer.parseInt(jTextField1.getText());
+        Values.minutes = Integer.parseInt(jTextField2.getText());
+        Values.interval = Long.parseLong(jTextField3.getText())*60*1000;
+        Listener list = new Listener(Values.hour, Values.minutes, Values.interval);
+        wiimote.addWiiMoteEventListeners(list);             //добавление слушателя в список слушателей
+        list.printtoFail(list.pw);
+        Values.startCurrentTimeMillis = System.currentTimeMillis();
+        Values.wakeUp = correntCalendar();
+        int timeSleep = (int)(Values.wakeUp.getTimeInMillis()-Values.startCurrentTimeMillis);
+        Timer start = new Timer(timeSleep, aList);
+        start.start();
+        start.setRepeats(false);        
+    }
+    
+    
     public Calendar correntCalendar(){
         Calendar now = Calendar.getInstance();
         Calendar correntC = Calendar.getInstance();        
@@ -44,6 +58,7 @@ public class NewJFrame extends javax.swing.JFrame {
         }
         return correntC;
     }
+    
 
     private static class TXTfilter extends javax.swing.filechooser.FileFilter  {
 
@@ -63,22 +78,6 @@ public class NewJFrame extends javax.swing.JFrame {
         }
         }
     
-    /*public class Timer extends javax.swing.Timer{
-    private final long time;
-    Timer(int time, ActionListener aList){
-        
-        this.time = time;
-        aList = new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                wiimote.activateMotionSensing();
-            }
-        };
-        
-    }
-}*/
-
     /**
      * Creates new form NewJFrame
      */
@@ -304,17 +303,7 @@ public class NewJFrame extends javax.swing.JFrame {
     //по кнопке СТАРТ подключение к Wiimote, создание файла для записи координат, запись
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         
-        wiimote.activateMotionSensing();
-        int hour = Integer.parseInt(jTextField1.getText());
-        int minutes = Integer.parseInt(jTextField2.getText());
-        Listener list = new Listener(hour, minutes);
-        wiimote.addWiiMoteEventListeners(list);             //добавление слушателя в список слушателей
-        list.printtoFail(list.pw);
-        Values.startCurrentTimeMillis = System.currentTimeMillis();
-        Calendar wakeUp = correntCalendar();
-        Timer start = new Timer((int)(wakeUp.getTimeInMillis()-Values.startCurrentTimeMillis), aList);
-        start.start();
-        start.setRepeats(false);
+        
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -403,8 +392,6 @@ public class NewJFrame extends javax.swing.JFrame {
                 new NewJFrame().setVisible(true);
             }
         });
-
-
 
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables

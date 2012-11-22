@@ -4,10 +4,11 @@
  */
 package WiiAlarm;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.Calendar;
+import wiiusej.WiiUseApiManager;
+import wiiusej.Wiimote;
 
 /**
  *
@@ -19,6 +20,10 @@ public class Values {
     public static File filetxt;
     public PrintWriter PrintWriter;
     public static long startCurrentTimeMillis;
+    public static int hour;
+    public static long interval;
+    public static int minutes;
+    public static Calendar wakeUp;
     
     
 }
