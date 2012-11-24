@@ -33,6 +33,8 @@ public class XYSplineRendererDemo1a extends ApplicationFrame
         JPanel jpanel = createDemoPanel();
         jpanel.setPreferredSize(new Dimension(600, 400));
         getContentPane().add(jpanel);
+        
+        
     }
 
     public static JPanel createDemoPanel() throws FileNotFoundException, IOException
@@ -61,7 +63,7 @@ public class XYSplineRendererDemo1a extends ApplicationFrame
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Listener.class.getName()).log(Level.SEVERE, null, ex);}
 
-        String s="";
+        String s;
         XYSeries xyseries = new XYSeries("График"+" "+Values.filetxt.getName());
         while((s = in.readLine()) != null){
             String t[] = s.split(" ");

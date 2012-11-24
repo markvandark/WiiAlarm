@@ -12,8 +12,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sun.security.jgss.spnego.NegTokenInit;
 import wiiusej.WiiUseApiManager;
+import wiiusej.Wiimote;
 import wiiusej.wiiusejevents.physicalevents.ExpansionEvent;
 import wiiusej.wiiusejevents.physicalevents.IREvent;
 import wiiusej.wiiusejevents.physicalevents.MotionSensingEvent;
@@ -26,15 +26,16 @@ import wiiusej.wiiusejevents.wiiuseapievents.*;
  * @author Inn-nya-
  */
 public class Listener implements WiimoteListener {
-
-    private int hours = 0, minutes = 0; long interval = 0;
-    public Listener(int h, int m, long i) {
-        this.hours = h;
+    private Wiimote wiimote;
+ //   private int hours = 0, minutes = 0; long interval = 0;
+    public Listener(Wiimote wii) {
+ /*       this.hours = h;
         this.minutes = m;
-        this.interval = i;
+        this.interval = i;*/
+        this.wiimote = wii;
     }
     
-    public Calendar correntCalendar(){
+ /*   public Calendar correntCalendar(){
         Calendar now = Calendar.getInstance();
         Calendar correntC = Calendar.getInstance();        
         correntC.set( Calendar.HOUR_OF_DAY, hours);
@@ -45,26 +46,18 @@ public class Listener implements WiimoteListener {
             correntC.add(Calendar.HOUR_OF_DAY, +24);
         }
         return correntC;
-    }
+    }*/
         
     SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy_hh.mm");
-    //SimpleDateFormat timeformat = new SimpleDateFormat("hh.mm.ss");
     //создание файла out_dd.MM.yyyy_hh.mm.txt 
     public PrintWriter pw;
    
     public void printtoFail(PrintWriter p) {
-        Calendar temp = correntCalendar();
-        Calendar now = Calendar.getInstance();
         try {
             pw = new PrintWriter(new File("out_" + formatter.format(new Date()) + ".txt"));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Listener.class.getName()).log(Level.SEVERE, null, ex);
-        }/*
-        while(temp.after(now) & ){
-        pw.println(System.currentTimeMillis() + " " + 0 + " " + 0 + " " + 0);
-        temp.getTimeInMillis();
         }
-        */
     }
 
     @Override
@@ -92,7 +85,7 @@ public class Listener implements WiimoteListener {
                 + Math.pow((double)mse.getRawAcceleration().getX(), 2))*100))/100d;
         pw.println((System.currentTimeMillis()-Values.startCurrentTimeMillis) +" " + vec);
         if(System.currentTimeMillis()>(Values.wakeUp.getTimeInMillis()-Values.interval)){
-            
+            wiimote.activateRumble();
         }
     }
 
